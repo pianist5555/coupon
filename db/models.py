@@ -11,7 +11,7 @@ class CouponInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     code = Column(Text(), comment = '발급 코드')
 
-    reactions  = relationship("CouponIssuance")
+    issuances  = relationship("CouponIssuance")
 
 
 class CouponIssuance(Base):

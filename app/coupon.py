@@ -1,11 +1,12 @@
 import hashlib
+import asyncio
 from typing import List
 from datetime import datetime
 from db import crud
 from sqlalchemy.orm import Session
 
 
-def get_coupon_info(
+async def get_coupon_info(
     db: Session,
 ):
     return crud.get_coupon_info(db)
@@ -26,6 +27,9 @@ def update_get_coupon_info(
 def add_coupon_info(
     db: Session,
 ) -> List:
+    '''
+        쿠폰 150개 생성
+    '''
     coupons = []
     for _ in range(150):
         test_password = datetime.now()
@@ -40,3 +44,30 @@ def add_coupon_info(
             )
         )
     return coupons
+
+
+async def issue_coupon(
+    db: Session,
+):
+    loop = asyncio.get_running_loop()
+    coupon_issuances = await crud.get_coupon_issuance_for_issue(db)
+    
+    futures = []
+    for coupon_issuance in coupon_issuances:
+        futures.append(
+            loop.run_in_executor(
+                None,
+                crud.issue_coupon,
+                db,
+                coupon_issuance
+            )
+        )
+
+    result = []
+    for res in await asyncio.gather(
+        *futures
+    ):
+        result.append(res)
+
+    print(result)
+    

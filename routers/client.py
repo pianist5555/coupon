@@ -6,7 +6,6 @@ from app import coupon
 from common import utils
 
 
-
 router = APIRouter()
 
 @router.get("/create", name="쿠폰 생성")
@@ -16,11 +15,20 @@ def create(
     response = coupon.add_coupon_info(db)
     return response
 
-@router.get("/issuance", name="쿠폰 발급 (선착순)")
-def issuance(
+
+@router.get("/issue_coupon", name="쿠폰 발급 (선착순)")
+async def issuance(
     db: Session = Depends(get_db),
 ):
-    ...
+    await coupon.issue_coupon(db)
+    return {
+        'pass_coupon':[
+            '1'
+        ],
+        'block_coupon':[
+            '2'
+        ],
+    }
 
 
 @router.get("/test", name="테스트")

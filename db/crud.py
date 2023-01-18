@@ -4,16 +4,26 @@ from sqlalchemy.orm import Session
 from db import models
 
 
-def get_coupon_info(
+async def get_coupon_issuance_for_issue(
     db: Session,
-):
-    coupon_info = db.query(models.CouponInfo)
-    return coupon_info
+) -> List[models.CouponIssuance]:
+    coupon_infos = db.query(
+        models.CouponInfo
+    ).filter(
+        models.CouponInfo.issuances == None
+    ).all()
+
+    coupon_issuances = [
+        models.CouponIssuance(
+            coupon_info_id = coupon_info.id,
+        ) for coupon_info in coupon_infos
+    ]
+    return coupon_issuances
 
 
 def get_coupon_inssuance(
     db: Session,
-):
+) -> models.CouponIssuance:
     coupon_inssuance = db.query(models.CouponIssuance)
     return coupon_inssuance
 
@@ -36,7 +46,7 @@ def update_get_coupon_info(
 def add_coupon_info(
     db: Session,
     code: str = None,
-):
+) -> str:
     coupon_info = models.CouponInfo(
         code = code,
     )
@@ -56,3 +66,14 @@ def add_coupon_issuance(
     db.add(coupon_issuance)
     db.commit()
     db.flush()
+
+
+def issue_coupon(
+    db: Session,
+    coupon_issuance: models.CouponIssuance
+):
+    print(f'쿠폰 발급: {coupon_issuance.coupon_info_id}')
+    db.add(coupon_issuance)
+    db.commit()
+    # db.flush()
+    return coupon_issuance.coupon_info_id
