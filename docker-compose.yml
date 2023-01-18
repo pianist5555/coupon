@@ -1,0 +1,15 @@
+version: '3'
+services:
+  coupon_db:
+      image: postgres:14.4
+      ports:
+        - 5432:5432
+      restart: always
+      container_name: coupon_db
+      environment:
+        POSTGRES_USER: "ubuntu"
+        POSTGRES_PASSWORD: "ubuntu"      
+        PGDATA: /var/lib/postgresql/pgdata
+        TZ: "Asia/Seoul"
+      volumes:
+        - D:\Code\WorkFromHome\test_coupon\postgresql:/var/lib/postgresql/pgdata
