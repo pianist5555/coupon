@@ -4,6 +4,7 @@ from typing import List
 from datetime import datetime
 from db import crud
 from sqlalchemy.orm import Session
+from app.coupon_manager import CouponManager
 
 
 async def get_coupon_info(
@@ -50,16 +51,18 @@ async def issue_coupon(
     db: Session,
 ):
     loop = asyncio.get_running_loop()
-    coupon_issuances = await crud.get_coupon_issuance_for_issue(db)
-    
+    coupon_issuances = crud.get_coupon_issuance_for_issue(db)
+    coupon_manager = CouponManager.instance()
+
     futures = []
-    for coupon_issuance in coupon_issuances:
+    for coupon_issuance in coupon_issuances: # range 150개로 변경하고 내부에서 issuance 객체 만들도록 변경
         futures.append(
             loop.run_in_executor(
                 None,
                 crud.issue_coupon,
                 db,
-                coupon_issuance
+                coupon_issuance,
+                coupon_manager,
             )
         )
 
@@ -70,4 +73,3 @@ async def issue_coupon(
         result.append(res)
 
     print(result)
-    

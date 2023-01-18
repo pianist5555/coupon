@@ -21,4 +21,3 @@ class CouponIssuance(Base):
     coupon_info_id = Column(Integer, ForeignKey('coupon_info.id'))
     add_date = Column(DateTime, default = datetime.now(), comment = '발급일')
     use_date = Column(DateTime, default = None, comment = '사용일')
-    
