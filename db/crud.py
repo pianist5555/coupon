@@ -35,13 +35,16 @@ def update_get_coupon_info(
 
 def add_coupon_info(
     db: Session,
+    code: str = None,
 ):
     coupon_info = models.CouponInfo(
-        code = 'XXXX',
+        code = code,
     )
     db.add(coupon_info)
     db.commit()
     db.flush()
+
+    return coupon_info.code
 
 
 def add_coupon_issuance(
