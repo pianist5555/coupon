@@ -25,23 +25,8 @@ def get_coupon_issuance_for_issue(
 def get_coupon_inssuance(
     db: Session,
 ) -> models.CouponIssuance:
-    coupon_inssuance = db.query(models.CouponIssuance)
+    coupon_inssuance = db.query(models.CouponIssuance).all()
     return coupon_inssuance
-
-
-def update_get_coupon_info(
-    db: Session,
-    coupon_info_id_list: List,
-):
-    db.query(models.CouponInfo).filter(
-            models.CouponInfo.id.in_(coupon_info_id_list)
-        ).update(
-            {
-                'code': 'YYYY'
-            }
-        )
-    db.commit()
-    db.flush()
 
 
 def add_coupon_info(
@@ -85,6 +70,6 @@ def issue_coupon(
 
         print(f'쿠폰 발급 성공 쿠폰 ID: {coupon_issuance.coupon_info_id}')
     else:
-        print(f'쿠폰 발급 실패 쿠폰 제한: {coupon_manager.get_limit_coupon}')
+        print(f'쿠폰 발급 실패 쿠폰 제한: {coupon_manager.get_limit_coupon}') # 태스크들 멈추게하면 좋을듯
 
     return coupon_issuance.coupon_info_id
