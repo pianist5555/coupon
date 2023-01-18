@@ -21,4 +21,7 @@ def get_db():
     try:
         yield db
     finally:
-        db.close()
+        try:
+            db.close()
+        except Exception as e:
+            print(e) # loop가 새로운 db를 주지않고 기존 db를 주고 있음 싱글턴의 영향일 수도 있고 아닐 수도 있다 디버깅 해야함

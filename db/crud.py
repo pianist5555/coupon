@@ -38,7 +38,7 @@ def add_coupon_info(
     )
     db.add(coupon_info)
     db.commit()
-    db.flush()
+    #db.flush()
 
     return coupon_info.code
 
