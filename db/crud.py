@@ -7,26 +7,21 @@ from app.coupon_manager import CouponManager
 
 def get_coupon_issuance_for_issue(
     db: Session,
+    coupon_manager: CouponManager,
 ) -> List[models.CouponIssuance]:
-    coupon_infos = db.query(
-        models.CouponInfo
-    ).filter(
-        models.CouponInfo.issuances == None
-    ).all()
+    coupon_info = coupon_manager.pop_coupon()
+    coupon_issuance = models.CouponIssuance(
+        coupon_info_id = coupon_info.id,
+    )
 
-    coupon_issuances = [
-        models.CouponIssuance(
-            coupon_info_id = coupon_info.id,
-        ) for coupon_info in coupon_infos
-    ]
-    return coupon_issuances
+    return coupon_issuance
 
 
-def get_coupon_inssuance(
+def get_coupon_info(
     db: Session,
-) -> models.CouponIssuance:
-    coupon_inssuance = db.query(models.CouponIssuance).all()
-    return coupon_inssuance
+) -> models.CouponInfo:
+    coupon_info = db.query(models.CouponInfo).all()
+    return coupon_info
 
 
 def add_coupon_info(
@@ -59,14 +54,8 @@ def issue_coupon(
     coupon_issuance: models.CouponIssuance,
     coupon_manager: CouponManager,
 ):
-    while coupon_manager.check_duplicate_coupon(coupon_issuance): # 이미 존재하면 true를 리턴
-        coupon_issuance = get_coupon_issuance_for_issue(db)
-
     if coupon_manager.check_limit_coupon():
-        #db.add(coupon_issuance)
-        #db.commit()
-        #db.flush()
-        coupon_manager.add_coupon(coupon_issuance)
+        coupon_manager.use_coupon(coupon_issuance)
 
         print(f'쿠폰 발급 성공 쿠폰 ID: {coupon_issuance.coupon_info_id}')
     else:

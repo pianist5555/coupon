@@ -14,7 +14,8 @@ class CouponManager():
     
     def __init__(self):
         db = next(get_db())
-        self._coupon_list = crud.get_coupon_inssuance(db=db)
+        self._coupon_list = crud.get_coupon_info(db=db)
+        self._used_coupon_list = []
         self._limit_coupon = 100
 
     @classmethod
@@ -35,11 +36,14 @@ class CouponManager():
     def get_limit_coupon(self):
         return self._limit_coupon
 
-    def add_coupon(self, coupon):
-        self._coupon_list.append(coupon)
+    def use_coupon(self, coupon):
+        self._used_coupon_list.append(coupon)
+
+    def pop_coupon(self):
+        return self._coupon_list.pop()
 
     def check_duplicate_coupon(self, coupon):
-        if coupon in self._coupon_list:
+        if coupon in self._used_coupon_list:
             return True
         else:
             return False
@@ -49,3 +53,4 @@ class CouponManager():
             return True
         else:
             return False
+    
