@@ -54,11 +54,16 @@ def issue_coupon(
     coupon_issuance: models.CouponIssuance,
     coupon_manager: CouponManager,
 ):
+    id = None
+    code = None
+
     if coupon_manager.check_limit_coupon():
         coupon_manager.use_coupon(coupon_issuance)
-
+        
         print(f'쿠폰 발급 성공 쿠폰 ID: {coupon_issuance.coupon_info_id}')
     else:
         print(f'쿠폰 발급 실패 쿠폰 제한: {coupon_manager.get_limit_coupon}') # TODO: 태스크들 멈추게하면 좋을듯
 
-    return coupon_issuance.coupon_info_id
+    return {
+        'coupon_info.id': coupon_issuance.coupon_info_id,
+    }

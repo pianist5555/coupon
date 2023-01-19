@@ -20,7 +20,7 @@ def create(
 async def issuance(
     db: Session = Depends(get_db),
 ):
-    result = await coupon.issue_coupon(db)
+    return await coupon.issue_coupon(db)
 
 
 @router.get("/call/api", name="API 콜")

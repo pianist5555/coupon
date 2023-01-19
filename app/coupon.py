@@ -1,6 +1,7 @@
 import hashlib
 import asyncio
 import requests
+import aiohttp
 from typing import List
 from datetime import datetime
 from db import crud
@@ -54,20 +55,20 @@ async def issue_coupon(
     coupon_manager = CouponManager.instance()
     coupon_issuance = crud.get_coupon_issuance_for_issue(db, coupon_manager)
     result = crud.issue_coupon(db, coupon_issuance, coupon_manager)
-    
+
     return result
 
 async def api_routine():
-    res = requests.get(f'http://127.0.0.1:8001/coupon/issue_coupon')
-    return res.text
-
-async def call_api():
-    futures = []
-    for _ in range(0,150):
-        futures.append(api_routine())
-
-    result = []
-    for res in  await asyncio.gather(*futures):
-        result.append(res)
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url='http://127.0.0.1:8001/coupon/issue_coupon') as res:
+            result = await res.json()
 
     return result
+
+async def call_api():
+    async with aiohttp.ClientSession() as session:
+        results = await asyncio.gather(
+            *[api_routine() for _ in range(150)]
+        )
+
+        return results
