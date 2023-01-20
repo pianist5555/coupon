@@ -3,7 +3,7 @@ from db.database import get_db
 
 class CouponManager(): 
     '''
-    single tone pattern class for coupon
+    singleton pattern class for coupon
 
     싱글턴 패턴으로 issue_coupon 함수로 쿠폰을 발급할 때
     self._coupon_list 쿠폰 번호가 존재하면 다른 쿠폰을 사용한다
